@@ -1,0 +1,15 @@
+toggle-decorations (1.0) unstable; urgency=medium
+
+  * Now setnewwinprops uses the C program toggle-decorations.c to set or unset
+    window decorations. This C program was done by muktupavels.
+    However, toggle-decorations is not part of this package because it's build for
+    all architectures.
+    setnewwinprops may use an alternative method to set or unset
+    window decorations tappping keys in the window menu. 
+    Will build toggle-decorations in a separate package.
+
+ -- Jordi Pujol Palomer <jordipujolp@gmail.com>  Sun, 02 Oct 2022 21:42:43 +0200
+
+Local variables:
+mode: debian-changelog
+End:
