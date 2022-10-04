@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <X11/Xlib.h>
 
 typedef struct
@@ -79,7 +80,8 @@ get_motif_wm_hints (Display *display,
 
 static void
 toggle_window_decorations (Display *display,
-                           Window   window)
+                           Window   window,
+                           bool toggle)
 {
   MotifWmHints *hints;
   Atom property;
@@ -93,13 +95,16 @@ toggle_window_decorations (Display *display,
     }
 
   hints->flags |= (1L << 1);
-  hints->decorations = hints->decorations == 0 ? (1L << 0) : 0;
+  if (toggle) {
+    hints->decorations = hints->decorations == 0 ? (1L << 0) : 0;
 
-  property = XInternAtom (display, "_MOTIF_WM_HINTS", False);
-  nelements = sizeof (*hints) / sizeof (long);
+    property = XInternAtom (display, "_MOTIF_WM_HINTS", False);
+    nelements = sizeof (*hints) / sizeof (long);
 
-  XChangeProperty (display, window, property, property, 32, PropModeReplace,
+    XChangeProperty (display, window, property, property, 32, PropModeReplace,
                    (unsigned char *) hints, nelements);
+  } else
+    printf ("Current decorations: %ld\n", hints->decorations);
 
   free (hints);
 }
@@ -110,18 +115,22 @@ main (int   argc,
 {
   Window window;
   Display *display;
+  bool toggle = true;
 
   window = 0;
-  if (argc == 2)
+  if (argc >= 2)
     {
       sscanf (argv[1], "0x%lx", &window);
 
       if (window == 0)
         sscanf (argv[1], "%lu", &window);
+        
+      if (argc == 3)
+        toggle = false;
     }
   else
     {
-      printf ("Usage: %s WINDOW-ID\n", argv[0]);
+      printf ("Usage: %s WINDOW-ID [\"show\"]\n", argv[0]);
       printf ("\nExample:\n%s 0x1234567\n", argv[0]);
       return 1;
     }
@@ -133,7 +142,7 @@ main (int   argc,
   if (display == NULL)
     return 1;
 
-  toggle_window_decorations (display, window);
+  toggle_window_decorations (display, window, toggle);
   XCloseDisplay (display);
 
   return 0;
