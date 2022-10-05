@@ -1,3 +1,10 @@
+toggle-decorations (1.3) unstable; urgency=medium
+
+  [ Jordi Pujol Palomer ]
+  * include a LICENSE file
+
+ -- Jordi Pujol Palomer <jordipujolp@gmail.com>  Wed, 05 Oct 2022 19:24:07 +0200
+
 toggle-decorations (1.2) unstable; urgency=medium
 
   [ Jordi Pujol Palomer ]
