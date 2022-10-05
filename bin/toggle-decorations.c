@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
+#include <unistd.h>
 #include <X11/Xlib.h>
 
 typedef struct
@@ -81,7 +81,7 @@ get_motif_wm_hints (Display *display,
 static void
 toggle_window_decorations (Display *display,
                            Window   window,
-                           bool toggle)
+                           int mode)
 {
   MotifWmHints *hints;
   Atom property;
@@ -95,8 +95,18 @@ toggle_window_decorations (Display *display,
     }
 
   hints->flags |= (1L << 1);
-  if (toggle) {
-    hints->decorations = hints->decorations == 0 ? (1L << 0) : 0;
+  if (mode != 's') {
+    switch (mode) {
+      case 'e':
+        hints->decorations = 1L;
+        break;
+      case 'd':
+        hints->decorations = 0;
+        break;
+      default:
+        hints->decorations = hints->decorations == 0 ? (1L << 0) : 0;
+        break;
+    }
 
     property = XInternAtom (display, "_MOTIF_WM_HINTS", False);
     nelements = sizeof (*hints) / sizeof (long);
@@ -115,22 +125,32 @@ main (int   argc,
 {
   Window window;
   Display *display;
-  bool toggle = true;
+  int opt;
+  int mode = 't';
 
   window = 0;
   if (argc >= 2)
     {
-      sscanf (argv[1], "0x%lx", &window);
+      if (argc > 2)
+      while ((opt = getopt(argc, argv, "edst")) != -1) {
+        switch (opt) {
+        case 'e':
+        case 'd':
+        case 's':
+          mode = opt; break;
+        default: break;
+        }
+      }
+
+      sscanf (argv[argc-1], "0x%lx", &window);
 
       if (window == 0)
-        sscanf (argv[1], "%lu", &window);
-        
-      if (argc == 3)
-        toggle = false;
+        sscanf (argv[argc-1], "%lu", &window);
     }
   else
     {
-      printf ("Usage: %s WINDOW-ID [\"show\"]\n", argv[0]);
+      printf ("Usage: %s [-t|-e|-d|-s] WINDOW-ID\n", argv[0]);
+      printf ("Options: -t toggle (default), -e enable, -d disable, -s show state\n");
       printf ("\nExample:\n%s 0x1234567\n", argv[0]);
       return 1;
     }
@@ -142,7 +162,7 @@ main (int   argc,
   if (display == NULL)
     return 1;
 
-  toggle_window_decorations (display, window, toggle);
+  toggle_window_decorations (display, window, mode);
   XCloseDisplay (display);
 
   return 0;

@@ -1,3 +1,16 @@
+toggle-decorations (1.2) unstable; urgency=medium
+
+  [ Jordi Pujol Palomer ]
+  * implement separate options to:
+    - option -t : toggle decorations, default
+    - option -e : enable decorations
+    - option -d : disable decorations
+    - option -s : show decorations state
+    - Usage:
+      toggle-decorations [-t|-e|-d|-s] WINDOW-ID
+
+ -- Jordi Pujol Palomer <jordipujolp@gmail.com>  Wed, 05 Oct 2022 03:38:03 +0200
+
 toggle-decorations (1.1) unstable; urgency=medium
 
   [ Jordi Pujol Palomer ]
