@@ -1,5 +1,5 @@
 Source: toggle-decorations
-Section: X11
+Section: x11
 Priority: optional
 Maintainer: Jordi Pujol <jordi-pujol@telefonica.net>
 Build-Depends:
